@@ -36,6 +36,8 @@ public class Main {
             }
             pagamentos.stream().forEach(System.out::println);
         }
+
+        
     }
 
 }
