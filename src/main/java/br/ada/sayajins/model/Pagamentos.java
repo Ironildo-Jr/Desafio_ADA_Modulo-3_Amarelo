@@ -69,6 +69,9 @@ public class Pagamentos {
             } else if (tipoPagamentoEnum.equals(TipoPagamentoEnum.DEBITO)) {
                 return this.valor.multiply((new BigDecimal("1"))
                         .add(new BigDecimal("0.01").multiply(new BigDecimal(monthsBetween.toString()))));
+            } else if (tipoPagamentoEnum.equals(TipoPagamentoEnum.BOLETO)) {
+                return this.valor.multiply((new BigDecimal("1"))
+                        .add(new BigDecimal("0.05").multiply(new BigDecimal(monthsBetween.toString()))));
             }
 
         }
