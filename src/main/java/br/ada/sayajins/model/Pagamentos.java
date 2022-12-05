@@ -3,11 +3,10 @@ package br.ada.sayajins.model;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Locale;
+
+import org.threeten.extra.LocalDateRange;
 
 public class Pagamentos {
     private String nome;
@@ -60,16 +59,18 @@ public class Pagamentos {
 
         if (this.dtVencto.isBefore(LocalDate.now())) {
 
-            Long monthsBetween = ChronoUnit.MONTHS.between(
-                    YearMonth.from(this.dtVencto),
-                    YearMonth.from(LocalDateTime.now()));
+            LocalDateRange ldr = LocalDateRange.of(dtVencto, LocalDate.now());
 
-            System.out.println(monthsBetween); // 3
+            Long monthsBetween = ldr.toPeriod().toTotalMonths();
 
             if (tipoPagamentoEnum.equals(TipoPagamentoEnum.CREDITO)) {
                 return this.valor.multiply((new BigDecimal("1"))
                         .add(new BigDecimal("0.03").multiply(new BigDecimal(monthsBetween.toString()))));
+            } else if (tipoPagamentoEnum.equals(TipoPagamentoEnum.DEBITO)) {
+                return this.valor.multiply((new BigDecimal("1"))
+                        .add(new BigDecimal("0.01").multiply(new BigDecimal(monthsBetween.toString()))));
             }
+
         }
         return this.valor;
     }
