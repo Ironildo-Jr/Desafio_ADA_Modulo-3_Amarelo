@@ -3,6 +3,7 @@ package br.ada.sayajins.model;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class Pagamentos {
@@ -67,7 +68,7 @@ public class Pagamentos {
     public String toString(){
         return this.nome
                    .concat("   |   ")
-                   .concat(this.dtVencto.toString())
+                   .concat(this.dtVencto.format(DateTimeFormatter.ofPattern("dd/MM/YYYY")))
                    .concat("   |   ")
                    .concat(this.getValorFormatado())
                    .concat("   |   ")
