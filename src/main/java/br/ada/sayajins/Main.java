@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.FileWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,12 +33,17 @@ public class Main {
                     LocalDate DataVenc = LocalDate.parse(info.get(2), formatoData);
                     Double valor = Double.parseDouble(info.get(3));
                     TipoPagamentoEnum tipo = TipoPagamentoEnum.valueOf(info.get(1));
-                    pagamentos.add(new Pagamentos(nome, DataVenc, valor, tipo));
+                    Pagamentos novoPagamento = new Pagamentos(nome, DataVenc, valor, tipo);
+                    pagamentos.add(novoPagamento);
+                    String arquivo = String.format("src/main/resources/PAGAMENTOS_%s_%s.csv", tipo, LocalDate.now()); 
+                    var writer = new PrintWriter(new FileWriter(new File(arquivo), true));
+                    writer.println(String.format("%s;%s;%s;%s", novoPagamento.getNome(), novoPagamento.getTipoPagamentoEnum(), novoPagamento.getDtVencto(), novoPagamento.getValor()));
+                    writer.close();
                 }
             }
             pagamentos.stream().forEach(System.out::println);
         }
-
+        
         
     }
 
