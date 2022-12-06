@@ -74,6 +74,19 @@ public class Pagamentos {
                         .add(new BigDecimal("0.05").multiply(new BigDecimal(monthsBetween.toString()))));
             }
 
+        } else {
+
+            LocalDateRange ldr = LocalDateRange.of(LocalDate.now(), dtVencto);
+
+            Integer daysBetween = ldr.lengthInDays();
+
+            if (tipoPagamentoEnum.equals(TipoPagamentoEnum.PIX)) {
+                return this.valor.multiply((new BigDecimal("1"))
+                        .subtract(new BigDecimal("0.005").multiply(new BigDecimal(daysBetween.toString()))));
+            } else if (tipoPagamentoEnum.equals(TipoPagamentoEnum.FIDELIDADE)) {
+                return this.valor.multiply((new BigDecimal("1"))
+                        .subtract(new BigDecimal("0.005").multiply(new BigDecimal(daysBetween.toString()))));
+            }
         }
         return this.valor;
     }
