@@ -55,40 +55,30 @@ public class Pagamentos {
 
     public BigDecimal getValorTotal() {
 
-        // Duration duracao = Duration.between(this.dtVencto,LocalDateTime.now());
-
-        if (this.dtVencto.isBefore(LocalDate.now())) {
+        if (this.dtVencto.isBefore(LocalDate.now()) && (!tipoPagamentoEnum.equals(TipoPagamentoEnum.FIDELIDADE)
+                || !tipoPagamentoEnum.equals(TipoPagamentoEnum.PIX))) {
 
             LocalDateRange ldr = LocalDateRange.of(dtVencto, LocalDate.now());
 
             Long monthsBetween = ldr.toPeriod().toTotalMonths();
 
-            if (tipoPagamentoEnum.equals(TipoPagamentoEnum.CREDITO)) {
-                return this.valor.multiply((new BigDecimal("1"))
-                        .add(new BigDecimal("0.03").multiply(new BigDecimal(monthsBetween.toString()))));
-            } else if (tipoPagamentoEnum.equals(TipoPagamentoEnum.DEBITO)) {
-                return this.valor.multiply((new BigDecimal("1"))
-                        .add(new BigDecimal("0.01").multiply(new BigDecimal(monthsBetween.toString()))));
-            } else if (tipoPagamentoEnum.equals(TipoPagamentoEnum.BOLETO)) {
-                return this.valor.multiply((new BigDecimal("1"))
-                        .add(new BigDecimal("0.05").multiply(new BigDecimal(monthsBetween.toString()))));
-            }
+            return this.valor.multiply((new BigDecimal("1"))
+                    .add(tipoPagamentoEnum.calcularJuros().multiply(new BigDecimal(monthsBetween.toString()))));
 
-        } else {
+        } else if (tipoPagamentoEnum.equals(TipoPagamentoEnum.FIDELIDADE)
+                || tipoPagamentoEnum.equals(TipoPagamentoEnum.PIX)) {
 
             LocalDateRange ldr = LocalDateRange.of(LocalDate.now(), dtVencto);
 
             Integer daysBetween = ldr.lengthInDays();
 
-            if (tipoPagamentoEnum.equals(TipoPagamentoEnum.PIX)) {
-                return this.valor.multiply((new BigDecimal("1"))
-                        .subtract(new BigDecimal("0.005").multiply(new BigDecimal(daysBetween.toString()))));
-            } else if (tipoPagamentoEnum.equals(TipoPagamentoEnum.FIDELIDADE)) {
-                return this.valor.multiply((new BigDecimal("1"))
-                        .subtract(new BigDecimal("0.005").multiply(new BigDecimal(daysBetween.toString()))));
-            }
+            return this.valor.multiply((new BigDecimal("1"))
+                    .subtract(tipoPagamentoEnum.calcularJuros().multiply(new BigDecimal(daysBetween.toString()))));
+
         }
+
         return this.valor;
+
     }
 
     public Pagamentos(String s, LocalDate dateVencto, double valor, TipoPagamentoEnum tipoPagamentoEnum) {
